@@ -40,7 +40,7 @@ def main():
     print("Aguardando usuário")
 
     # num = int(input('Qual numero voce deseja transmitir de [0-9]: '))
-    num = 4
+    num = 8
 
     frequencias = {1 : (697, 1209), 2 : (697, 1336), 3 : (697, 1477), 'A' : (697, 1633),
             4 : (770, 1209), 5 : (770, 1336), 6 : (770, 1477), 'B' : (770, 1633),
@@ -69,14 +69,15 @@ def main():
     sd.play(soma_senoides, taxa)
     sd.wait()
 
-    plt.plot(tempo, soma_senoides)
-    plt.title('Frequências Somadas por Tempo')
-    plt.xlabel('tempo')
-    plt.ylabel('Frequencias somadas')
+    # plt.plot(tempo, soma_senoides)
+    # plt.title('Frequências Somadas por Tempo')
+    # plt.xlabel('tempo')
+    # plt.ylabel('Frequencias somadas')
+
  
-    sinal = signalMeu()
-    sinal.plotFFT(soma_senoides, taxa)
-    
+    # signal = signalMeu()
+    # signal.plotFFT(soma_senoides, taxa)
+
 
 if __name__ == "__main__":
     main()
