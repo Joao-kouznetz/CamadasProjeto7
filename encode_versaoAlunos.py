@@ -4,6 +4,8 @@ from suaBibSignal import *
 import numpy as np
 import sounddevice as sd
 import matplotlib.pyplot as plt
+import sys
+from math import *
 
 #funções a serem utilizadas
 def signal_handler(signal, frame):
@@ -32,20 +34,48 @@ def main():
     # Utilize a funcao da biblioteca sounddevice para reproduzir o som. Entenda seus argumento.
     # Grave o som com seu celular ou qualquer outro microfone. Cuidado, algumas placas de som não gravam sons gerados por elas mesmas. (Isso evita microfonia).
     
-    # construa o gráfico do sinal emitido e o gráfico da transformada de Fourier. Cuidado. Como as frequencias sao relativamente altas, voce deve plotar apenas alguns pontos (alguns periodos) para conseguirmos ver o sinal
-    
+    # construa o gráfico do sinal emitido e o gráfico da transformada de Fourier. Cuidado. Como as frequencias sao relativamente altas, voce deve plotar apenas alguns pontos (alguns periodos) para conseguirmos ver o sinal  
 
     print("Inicializando encoder")
     print("Aguardando usuário")
-    print("Gerando Tons base")
-    print("Executando as senoides (emitindo o som)")
-    print("Gerando Tom referente ao símbolo : {}".format(NUM))
-    sd.play(tone, fs)
-    # Exibe gráficos
-    plt.show()
-    # aguarda fim do audio
+
+    # num = int(input('Qual numero voce deseja transmitir de [0-9]: '))
+    num = 4
+
+    frequencias = {1 : (697, 1209), 2 : (697, 1336), 3 : (697, 1477), 'A' : (697, 1633),
+            4 : (770, 1209), 5 : (770, 1336), 6 : (770, 1477), 'B' : (770, 1633),
+            7 : (8552, 1209), 8 : (852, 1336), 9 : (852, 1477), 'C' : (852, 1633),
+            'X' : (941, 1209), 0 : (941, 1336), '#' : (941, 1477), 'D' : (941, 1633) 
+            }  
+
+    frequencia = frequencias[num]
+
+    taxa = 44100
+    duracao = 5
+    tempo = np.linspace(0, duracao, taxa*duracao)
+
+    print(tempo)
+
+    soma_senoides = []
+
+    for i in tempo:
+        sen1 = sin(2*pi*frequencia[0]*i)
+        sen2 = sin(2*pi*frequencia[1]*i)
+        soma = sen1 + sen2
+        soma_senoides.append(soma)
+
+    soma_senoides = np.array(soma_senoides)
+    
+    sd.play(soma_senoides, taxa)
     sd.wait()
-    plotFFT(self, signal, fs)
+
+    plt.plot(tempo, soma_senoides)
+    plt.title('Frequências Somadas por Tempo')
+    plt.xlabel('tempo')
+    plt.ylabel('Frequencias somadas')
+ 
+    sinal = signalMeu()
+    sinal.plotFFT(soma_senoides, taxa)
     
 
 if __name__ == "__main__":
