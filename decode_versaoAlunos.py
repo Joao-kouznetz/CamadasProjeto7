@@ -52,8 +52,6 @@ def main():
     dados= audio[:, 0]  
     # use a funcao linspace e crie o vetor tempo. Um instante correspondente a cada amostra!
     lista_tempo=np.linspace(0,duration,fs*duration)
-    print(len(lista_tempo),"len lista tempo")
-    print(len(dados),"len dados")
     step=100
     tempo_reduce=lista_tempo[::step]
     dados_reduce=dados[::step]
@@ -68,8 +66,6 @@ def main():
     
     # preciso do de baixo
     xf, yf = signal.calcFFT(dados, fs)
-    print(xf,"xf")
-    print(yf,"yf")
 
     signal.plotFFT(dados,fs)
     
@@ -85,13 +81,58 @@ def main():
 
 
     # preciso das duas linhas de baixo
-    index = peakutils.indexes(yf, thres=0.75, min_dist=50)
+    index = peakutils.indexes(yf, thres=0.30, min_dist=50)
     print("index de picos {}" .format(index)) #yf é o resultado da transformada de fourier
 
 
+    frequenciaslista=[]
     #printe os picos encontrados! 
     for i in index:
         print("index de picos {}" .format(xf[i]))
+        frequenciaslista.append(xf[i])
+
+    frequencias = {1 : (697, 1209), 2 : (697, 1336), 3 : (697, 1477), 'A' : (697, 1633),
+            4 : (770, 1209), 5 : (770, 1336), 6 : (770, 1477), 'B' : (770, 1633),
+            7 : (8552, 1209), 8 : (852, 1336), 9 : (852, 1477), 'C' : (852, 1633),
+            'X' : (941, 1209), 0 : (941, 1336), '#' : (941, 1477), 'D' : (941, 1633) 
+            }  
+    
+    # 
+    def identify_key(frequenciaslista, frequencias):
+        for key, (freq1, freq2) in frequencias.items():
+            freq1bate=False
+            freq2bate=False
+            for valor in frequenciaslista:
+                if abs(valor - freq1) <= 5:
+                    freq1bate=True
+                if abs(valor - freq2) <= 5:
+                    freq2bate=True
+                if ((freq1bate==True) and (freq2bate==True)):
+                    return key
+           
+        return None  
+    # resultado = -1
+
+    # for i in range(1, 10):
+    #     soma = 0
+    #     for frequencia in frequenciaslista:
+    #         print(frequencias[i])
+    #         if frequencia > frequencias[i][0] - 2 and frequencia < frequencias[i][0] + 2:
+    #             soma += 1
+    #         if frequencia > frequencias[i][1] - 2 and frequencia < frequencias[i][1] + 2:
+    #             soma += 1
+    #     if soma == 2:
+    #         resultado = i
+
+    # print('resultado', resultado)
+
+    tecla_pressionada = identify_key(frequenciaslista, frequencias)
+    if tecla_pressionada is not None:
+        print(f"Tecla pressionada: {tecla_pressionada}")
+    else:
+        print("Nenhum botão pressionado ou botão não identificado.")
+    
+
     # Aqui você deverá tomar o seguinte cuidado: A funcao  peakutils.indexes retorna as POSICOES dos picos. Não os valores das frequências onde ocorrem! Pense a respeito
     
     #encontre na tabela duas frequencias proximas às frequencias de pico encontradas e descubra qual foi a tecla
